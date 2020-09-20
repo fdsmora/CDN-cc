@@ -22,7 +22,7 @@ def app():
         init_db()
 
     os.close(db_fd)
-    os.unlink(db_path)
+#    os.unlink(db_path)
 
 @pytest.fixture
 def client(app):
