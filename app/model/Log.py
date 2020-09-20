@@ -6,6 +6,7 @@ class Log:
     def __init__(self, filepath):
         self.filepath = filepath
         self.logname = filepath.split('/')[-1]
+        self.total_lines = self.count_lines()
 
         self.register_log_file(self.logname)
         self.set_log_id()
@@ -49,3 +50,12 @@ class Log:
         if self.line_starts_with('#Fields', current_line):
             fields_names = current_line.split()[1:]
         return fields_names
+
+    def count_lines(self):
+        with open(self.filepath, 'r') as f:
+            for i,line in enumerate(f):
+                pass
+        return i+1
+
+    def get_records_count(self):
+        return self.total_lines - 2 # exclude header lines

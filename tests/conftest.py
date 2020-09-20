@@ -31,10 +31,11 @@ def client(app):
 @pytest.fixture
 def test_logfile(app):
     tmp_dir = tempfile.mkdtemp()
+    test_logfile_name = 'testlog_1'
     parent_dir = Path(os.path.abspath(__file__)).parent.parent
-    test_log = "{}/testlog_1".format(parent_dir) 
+    test_log = "{}/{}".format(parent_dir, test_logfile_name) 
     copy(test_log, tmp_dir)
  
-    yield test_log 
+    yield "{}/{}".format(tmp_dir, test_logfile_name)
 
     rmtree(tmp_dir)
