@@ -38,4 +38,4 @@ def test_logfile():
  
     yield test_log 
 
-    shutil.rmtree(test_log1)
+    rmtree(tmp_dir)
