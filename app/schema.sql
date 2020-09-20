@@ -46,4 +46,5 @@ CREATE TABLE `LOGS` (
 , `sc-range-end` varchar(256)
 ,  CONSTRAINT `log_fk` FOREIGN KEY (`logfile_name_id`) REFERENCES `LOGFILE_NAMES` (`id`) ON DELETE CASCADE
 );
+DELETE FROM sqlite_sequence;
 COMMIT;

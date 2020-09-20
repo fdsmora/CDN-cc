@@ -17,10 +17,10 @@ def countLines(file_handle):
     return i+1
 
 def count_log_records_in_db(db):
-    row = db.execute('SELECT COUNT(*) FROM LOGFILE_NAMES').fetchone()    
+    row = db.execute('SELECT COUNT(*) FROM LOGS').fetchone()    
     return row[0]
 
-def test_setup_test_logs(test_logfile, app):
+def test_setup_test_logs(app, test_logfile):
     logfile_name = test_logfile.split('/')[-1]
 
     with app.app_context():

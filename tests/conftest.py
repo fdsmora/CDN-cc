@@ -16,21 +16,20 @@ def app():
         'DATABASE': db_path,
     })
 
-    yield app
-
     with app.app_context():
         init_db()
 
+    yield app
+
     os.close(db_fd)
-#    os.unlink(db_path)
+    os.unlink(db_path)
 
 @pytest.fixture
 def client(app):
     return app.test_client()
 
 @pytest.fixture
-def test_logfile():
-    print("running setup_test_logs")
+def test_logfile(app):
     tmp_dir = tempfile.mkdtemp()
     parent_dir = Path(os.path.abspath(__file__)).parent.parent
     test_log = "{}/testlog_1".format(parent_dir) 

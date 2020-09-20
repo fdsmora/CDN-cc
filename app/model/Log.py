@@ -19,7 +19,9 @@ class Log:
 
     def register_log_file(self, logname):
         db = get_db()
+
         db.execute("INSERT INTO LOGFILE_NAMES (file_name) values (?)", (self.logname,))
+        db.commit()
         
     def register_log_entries(self, filepath):
         with open(filepath, 'r') as f:
@@ -34,7 +36,10 @@ class Log:
 
     def register_log_entry(self, fields_names, fields_values):
         db = get_db()
-        db.execute("INSERT INTO LOGS ({}) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)".format(str(fields_names)[1:-1]+',\'logfile_name_id\''), (*fields_values, self.id));
+        fields_names = (str(fields_names)[1:-1] + ',\'logfile_name_id\'') # Remove brackets and include the foreign key column  
+        fields_values = (*fields_values, self.id) # Include foreign key value
+        db.execute("INSERT INTO LOGS ({}) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)".format(fields_names), fields_values);
+        db.commit()
 
     def line_starts_with(self, pattern, line):
         return re.search("^"+pattern, line) 
