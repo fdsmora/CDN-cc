@@ -9,12 +9,17 @@ run-app: ## Runs the microservice in localhost:5000 on Docker on your localhost 
 bytes-for-hits: ## Throws a GET request at http://localhost:5000/report/bytes/hit 
 	@echo "+ $@"
 	@echo "+ curl http://localhost:5000/report/bytes/hit"
-	@curl http://localhost:5000/report/bytes/hit
+	@curl http://localhost:5000/report/bytes/hit | python -m json.tool
 
 bytes-for-miss: ## Throws a GET request at http://localhost:5000/report/bytes/miss
 	@echo "+ $@"
 	@echo "+ curl http://localhost:5000/report/bytes/miss"
-	@curl http://localhost:5000/report/bytes/miss
+	@curl http://localhost:5000/report/bytes/miss | python -m json.tool
+
+success-vs-fails: ## Throws a GET request at http://localhost:5000/report/success_vs_fails
+	@echo "+ $@"
+	@echo "+ curl http://localhost:5000/report/success_vs_fails"
+	@curl http://localhost:5000/report/success_vs_fails | python -m json.tool
 
 minikube-deploy: ## Deploys microservice in Minikube 
 	@echo "+ $@"

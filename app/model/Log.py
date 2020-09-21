@@ -96,6 +96,16 @@ class Log:
         row = db.execute("SELECT 1 FROM LOGFILE_NAMES WHERE file_name = ?", (file_name,)).fetchone()
         return int((row and row[0]) or 0)
 
+    def get_total_success_requests(self):
+        db = get_db()
+        row = db.execute("select count(*) from logs where `sc-status` = 200").fetchone()
+        return int((row and row[0]) or 0)
+
+    def get_total_failed_requests(self):
+        db = get_db()
+        row = db.execute("select count(*) from logs where `x-edge-response-result-type` like '%error%'").fetchone()
+        return int((row and row[0]) or 0)
+
     @staticmethod
     def line_starts_with(pattern, line):
         return re.search("^"+pattern, line) 
