@@ -1,0 +1,18 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: fausto-cdn-deploy
+spec:
+  selector:
+    matchLabels:
+      app: cdn 
+  template:
+    metadata:
+      labels:
+        app: cdn 
+    spec:
+      containers:
+      - name: fausto-cdn-cont 
+        image: faustodsm/cdn-cc:latest 
+        ports:
+        - containerPort: 5000 
