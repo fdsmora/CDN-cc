@@ -1,0 +1,48 @@
+swagger: '2.0'
+host: 'localhost:5000'
+basePath: /
+info:
+  title: CDN report generator
+  description: Report generator for CDN customer logs
+  version: '1.0'
+paths:
+  '/report/bytes/{cdn_request_result_type}':
+    get:
+      summary: Get total bytes from miss or hit 
+      parameters:
+        - name: cdn_request_result_type
+          description: CDN request resutl type which must be equal to 'hit' or 'miss'
+          required: true
+          type: string
+          in: path
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+              type: object 
+              properties: 
+                  total_bytes: 
+                      type: integer 
+                  x-edge-response-result-type: 
+                      type: string
+        '400':
+          description: Invalid or missing CDN Request type 
+          schema:
+            type: string
+  '/report/success_vs_fails':
+    get:
+      summary: Get total success requests vs total failed requests 
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+              type: object 
+              properties: 
+                  total_failed_requests: 
+                      type: integer 
+                  total_success_requests: 
+                      type: integer 
+        '400': 
+          description: Invalid Request type 
+          schema:
+            type: string

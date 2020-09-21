@@ -1,6 +1,7 @@
 import os 
 
 from flask import Flask
+from flask_swagger_ui import get_swaggerui_blueprint
 
 def create_app(test_config=None):
     # create and configure the app
@@ -27,6 +28,14 @@ def create_app(test_config=None):
 
     from . import report
     app.register_blueprint(report.bp)
+
+    swagger_url = '/api/docs'
+    api_url = '/static/swagger.yml'
+    swagger_blueprint = get_swaggerui_blueprint(
+        swagger_url, 
+        api_url,
+    )
+    app.register_blueprint(swagger_blueprint, url_prefix=swagger_url)
 
     # a simple page that says hello
     @app.route('/hello/')
