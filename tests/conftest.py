@@ -3,7 +3,6 @@ import pytest
 import tempfile
 
 from app import create_app
-from pathlib import Path
 from shutil import copy, rmtree
 from app.db import init_db
 
@@ -32,8 +31,7 @@ def client(app):
 def test_logfile(app):
     tmp_dir = tempfile.mkdtemp()
     test_logfile_name = 'testlog_1'
-    parent_dir = Path(os.path.abspath(__file__)).parent.parent
-    test_log = "{}/{}".format(parent_dir, test_logfile_name) 
+    test_log = "{}/{}".format(app.instance_path, test_logfile_name) 
     copy(test_log, tmp_dir)
  
     yield "{}/{}".format(tmp_dir, test_logfile_name)
