@@ -14,6 +14,9 @@ def test_bytes_for_hits(app, client, test_logfile):
 
     assert get_bytes_for_hits_or_miss_from_test_logfile(test_logfile, "hit") == int(response.data)
 
+    response = client.get("/report/bytes/trash")
+    assert response.status_code == 400
+
 def get_bytes_for_hits_or_miss_from_test_logfile(test_logfile, cdn_request_result_type):
     field_names = []
     bytes_count = 0
