@@ -3,36 +3,19 @@ import re
 from app.db import get_db
 
 class Log:
-    def __init__(self):
-        # To be removed when the 'import log' API is created 
-        self.log_imported_into_db = False
-    
+
     def import_into_db(self, filepath):
-        self.filepath = filepath
-        self.logname = filepath.split('/')[-1]
-        self.logname = filepath.split('/')[-1]
-        self.total_lines = self.count_lines()
+        logname = filepath.split('/')[-1]
+      
+        if not self.is_log_imported(logname): 
+            self.logname = logname
+            self.filepath = filepath
+            self.total_lines = self.count_lines()
 
-        self._register_log_file(self.logname)
-        self._set_log_id()
+            self._register_log_file(self.logname)
+            self._set_log_id()
 
-        self._register_log_entries(filepath)
-
-        #### TEMPORAL 
-#        db = get_db()
-#        fields_names = (str(fields_names)[1:-1] + ',\'logfile_name_id\'') # Remove brackets and include the foreign key column  
-#        try:
-#            db.executemany("INSERT INTO LOGS ({}) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)".format(fields_names), self._register_log_entries(filepath));
-#            db.commit()
-#        except sqlite3.Error as e:
-#            # If DB gets locked, nothing much we can do, so ignore and continue
-#            #fausto
-#            import pdb
-#            pdb.set_trace()
-#            pass 
-
-#        self._register_log_entries(filepath)
-        self.log_imported_into_db = True 
+            self._register_log_entries(filepath)
 
     def _set_log_id(self):
         db = get_db()
@@ -106,6 +89,11 @@ class Log:
     def get_bytes_for_cdn_request_type(self, cdn_request_type):
         db = get_db()
         row = db.execute("SELECT SUM(`cs-bytes`+`sc-bytes`) FROM LOGS WHERE `x-edge-response-result-type`= ?", (cdn_request_type.capitalize(),)).fetchone()
+        return int((row and row[0]) or 0)
+
+    def is_log_imported(self, file_name):
+        db = get_db()
+        row = db.execute("SELECT 1 FROM LOGFILE_NAMES WHERE file_name = ?", (file_name,)).fetchone()
         return int((row and row[0]) or 0)
 
     @staticmethod

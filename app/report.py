@@ -10,11 +10,8 @@ def report_bytes(cdn_request_result_type):
     cdn_request_result_type = cdn_request_result_type.capitalize()
     if cdn_request_result_type and cdn_request_result_type in (CDN_Request_Result_Type.HIT, CDN_Request_Result_Type.MISS):
         log = Log()
-
-        # To be removed when the 'import log' API is created 
-        if not log.log_imported_into_db:
-            testlog_file1 = current_app.instance_path + '/testlog_1'
-            log.import_into_db(testlog_file1)
+        testlog_file1 = current_app.instance_path + '/testlog_1'
+        log.import_into_db(testlog_file1)
 
         total_bytes = Log().get_bytes_for_cdn_request_type(cdn_request_result_type)
 
