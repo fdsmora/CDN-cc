@@ -1,17 +1,22 @@
-FAUSTO_CONTAINER=faustodsm/cdn-cc:latest
+FAUSTO_IMAGE=faustodsm/cdn-cc:latest
 
 all: help
 
-run-app: ## Runs the microservice in localhost:5000 on Docker on your localhost (no minikube, for that run 'make minikube-deploy')
+run-app: ## Runs the microservice in localhost:5000 on Docker on your localhost (no Minikube, for that run 'make minikube-deploy')
 	@echo "+ $@"
-	@docker run --rm -d -p 5000:5000 ${FAUSTO_CONTAINER}
+	@docker run --rm -d -p 5000:5000 ${FAUSTO_IMAGE}
 
 bytes-for-hits: ## Throws a GET request at http://localhost:5000/report/bytes/hit 
 	@echo "+ $@"
 	@echo "+ curl http://localhost:5000/report/bytes/hit"
 	@curl http://localhost:5000/report/bytes/hit
 
-minikube-deploy: ## Deploys microservice in minikube 
+bytes-for-miss: ## Throws a GET request at http://localhost:5000/report/bytes/miss
+	@echo "+ $@"
+	@echo "+ curl http://localhost:5000/report/bytes/miss"
+	@curl http://localhost:5000/report/bytes/miss
+
+minikube-deploy: ## Deploys microservice in Minikube 
 	@echo "+ $@"
 	@kubectl apply -f cdn-deployment.yml 
 	@kubectl expose deployment  fausto-cdn-deploy --type=LoadBalancer --name=fausto-cdn-service
