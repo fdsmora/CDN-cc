@@ -1,11 +1,5 @@
 # CDN code challenge 
 ## A Python/Flask microservice for reporting on CDN customer logs
-<details>
-  <summary><strong>Table of Contents</strong>(click to expand)</summary>
-
-- [Features](#Features)
-- [Project description](#Project-description)
-- [Instructions](#Instructions)
 
 ### Features
  - Written in Python 3.8
