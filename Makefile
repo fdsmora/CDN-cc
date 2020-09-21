@@ -2,7 +2,7 @@ FAUSTO_CONTAINER=faustodsm/cdn-cc:latest
 
 all: help
 
-run-app: ## Runs the microservice in localhost:8000
+run-app: ## Runs the microservice in localhost:5000
 	@echo "+ $@"
 	@docker run --rm -d -p 5000:5000 ${FAUSTO_CONTAINER}
 

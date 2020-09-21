@@ -8,5 +8,6 @@ ENV FLASK_APP=app
 ENV FLASK_ENV=development
 COPY . /CDN-cc
 WORKDIR /CDN-cc
+EXPOSE 5000
 RUN pip3 install -r /CDN-cc/requirements.txt
 ENTRYPOINT [ "/CDN-cc/run_this_app.sh" ]
