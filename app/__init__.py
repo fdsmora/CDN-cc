@@ -35,6 +35,6 @@ def create_app(test_config=None):
 
     return app
 
-class CDN_Request_Type:
+class CDN_Request_Result_Type:
     HIT = 'Hit'
     MISS = 'Miss'
