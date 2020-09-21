@@ -29,4 +29,5 @@ minikube-deploy: ## Deploys microservice in Minikube
 	@minikube service fausto-cdn-service
 
 help:
+	@echo "Before testing make sure you run 'make run-app' to start the microservice"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
