@@ -36,7 +36,8 @@ class Log:
             f.readline()
             fields_names = f.readline().split()[1:]
 
-        fields_names = (str(fields_names)[1:-1] + ',\'logfile_name_id\'') # Remove brackets and include the foreign key column  
+        # Remove brackets and include the foreign key column
+        fields_names = (str(fields_names)[1:-1] + ',\'logfile_name_id\'')   
 
         def get_record(file_path):
             with open(file_path, 'r') as f:
@@ -55,24 +56,9 @@ class Log:
             db.executemany("INSERT INTO LOGS ({}) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)".format(fields_names), get_record(file_path));
             db.commit()
         except sqlite3.Error as e:
-            # If DB gets locked, nothing much we can do, so ignore and continue
-            #fausto
-            import pdb
-            pdb.set_trace()
+            # If DB gets locked, there's not much we can do for now, so ignore and continue
             pass 
         
-
-    def _register_log_entry(self, fields_names, fields_values):
-        db = get_db()
-        fields_names = (str(fields_names)[1:-1] + ',\'logfile_name_id\'') # Remove brackets and include the foreign key column  
-        fields_values = (*fields_values, self.id) # Include foreign key value
-        try:
-            db.execute("INSERT INTO LOGS ({}) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)".format(fields_names), fields_values);
-            db.commit()
-        except sqlite3.Error as e:
-            # If DB gets locked, nothing much we can do, so ignore and continue
-            pass 
-
     def count_lines(self):
         if self.filepath:
             with open(self.filepath, 'r') as f:
@@ -98,12 +84,12 @@ class Log:
 
     def get_total_success_requests(self):
         db = get_db()
-        row = db.execute("select count(*) from logs where `sc-status` = 200").fetchone()
+        row = db.execute("SELECT COUNT(*) FROM LOGS WHERE `sc-status` = 200").fetchone()
         return int((row and row[0]) or 0)
 
     def get_total_failed_requests(self):
         db = get_db()
-        row = db.execute("select count(*) from logs where `x-edge-response-result-type` like '%error%'").fetchone()
+        row = db.execute("SELECT COUNT(*) FROM LOGS WHERE `x-edge-response-result-type` lIKE '%error%'").fetchone()
         return int((row and row[0]) or 0)
 
     @staticmethod
