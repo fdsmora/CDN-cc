@@ -1,4 +1,4 @@
-# CDN code challenge 
+# Content Delivery Network logs report generator 
 ## A Python/Flask microservice for reporting on CDN customer logs
 
 ### Features
