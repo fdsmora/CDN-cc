@@ -10,7 +10,7 @@ bytes-for-hits: ## Throws a GET request at http://localhost:5000/report/bytes/hi
 	@echo "+ $@"
 	@echo "+ curl http://localhost:5000/report/bytes/hit"
 	@curl http://localhost:5000/report/bytes/hit
-	@echo -e '\n'
+#	@echo -e '\n'
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

@@ -3,6 +3,10 @@ import re
 from app.db import get_db
 
 class Log:
+    def __init__(self):
+        # To be removed when the 'import log' API is created 
+        self.log_imported_into_db = False
+    
     def import_into_db(self, filepath):
         self.filepath = filepath
         self.logname = filepath.split('/')[-1]
@@ -11,7 +15,24 @@ class Log:
 
         self._register_log_file(self.logname)
         self._set_log_id()
+
         self._register_log_entries(filepath)
+
+        #### TEMPORAL 
+#        db = get_db()
+#        fields_names = (str(fields_names)[1:-1] + ',\'logfile_name_id\'') # Remove brackets and include the foreign key column  
+#        try:
+#            db.executemany("INSERT INTO LOGS ({}) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)".format(fields_names), self._register_log_entries(filepath));
+#            db.commit()
+#        except sqlite3.Error as e:
+#            # If DB gets locked, nothing much we can do, so ignore and continue
+#            #fausto
+#            import pdb
+#            pdb.set_trace()
+#            pass 
+
+#        self._register_log_entries(filepath)
+        self.log_imported_into_db = True 
 
     def _set_log_id(self):
         db = get_db()
@@ -25,23 +46,49 @@ class Log:
         db.execute("INSERT INTO LOGFILE_NAMES (file_name) values (?)", (self.logname,))
         db.commit()
         
-    def _register_log_entries(self, filepath):
-        with open(filepath, 'r') as f:
-            fields_names = []
-            current_line = f.readline()
-            while current_line:
-                if Log.line_starts_with("#", current_line):
-                    fields_names = Log.get_field_names(current_line)
-                elif fields_names:
-                    self._register_log_entry(fields_names, current_line.split()) 
+    def _register_log_entries(self, file_path):
+        fields_names = []
+
+        with open(file_path, 'r') as f:
+            f.readline()
+            fields_names = f.readline().split()[1:]
+
+        fields_names = (str(fields_names)[1:-1] + ',\'logfile_name_id\'') # Remove brackets and include the foreign key column  
+
+        def get_record(file_path):
+            with open(file_path, 'r') as f:
                 current_line = f.readline()
+                while current_line:
+                    if not Log.line_starts_with("#", current_line):
+                        yield (*current_line.split('\t'), self.id) # Include foreign key value
+                        
+                    current_line = f.readline()
+
+        self._insert_log_record_into_db(get_record, file_path, fields_names)
+
+    def _insert_log_record_into_db(self, get_record, file_path, fields_names):
+        db = get_db()
+        try:
+            db.executemany("INSERT INTO LOGS ({}) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)".format(fields_names), get_record(file_path));
+            db.commit()
+        except sqlite3.Error as e:
+            # If DB gets locked, nothing much we can do, so ignore and continue
+            #fausto
+            import pdb
+            pdb.set_trace()
+            pass 
+        
 
     def _register_log_entry(self, fields_names, fields_values):
         db = get_db()
         fields_names = (str(fields_names)[1:-1] + ',\'logfile_name_id\'') # Remove brackets and include the foreign key column  
         fields_values = (*fields_values, self.id) # Include foreign key value
-        db.execute("INSERT INTO LOGS ({}) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)".format(fields_names), fields_values);
-        db.commit()
+        try:
+            db.execute("INSERT INTO LOGS ({}) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)".format(fields_names), fields_values);
+            db.commit()
+        except sqlite3.Error as e:
+            # If DB gets locked, nothing much we can do, so ignore and continue
+            pass 
 
     def count_lines(self):
         if self.filepath:
