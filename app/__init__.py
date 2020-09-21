@@ -25,9 +25,16 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
+    from . import report
+    app.register_blueprint(report.bp)
+
     # a simple page that says hello
     @app.route('/hello/')
     def hello():
         return 'Hello, World!'
 
     return app
+
+class CDN_Request_Type:
+    HIT = 'Hit'
+    MISS = 'Miss'
